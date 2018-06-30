@@ -52,5 +52,9 @@
     <string name="provide_detail">Please provide the following details..</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
+    <string name="bookstore_name">Enter Bookstore Name</string>
+    <string name="next">NEXT</string>
+    <string name="title_activity_register_store_map">Map</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

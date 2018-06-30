@@ -91,6 +91,7 @@ public class SellerRecyclerAdapter extends RecyclerView.Adapter<SellerRecyclerAd
         }
         notifyItemRangeRemoved(0,size);
     }
+
     public class SellerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView name;

@@ -7,7 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -57,11 +59,20 @@ public class AddBookActivity extends AppCompatActivity {
     private String phone;
     private ArrayAdapter<String> adapterCondition;
     private ArrayAdapter<String> adapterGenre;
+    private Toolbar toolbar;
+    private static final String TITLE = "Add Book";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_book);
+
+        toolbar = (Toolbar) findViewById(R.id.nav_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(TITLE);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Book");
@@ -255,5 +266,20 @@ public class AddBookActivity extends AppCompatActivity {
 
             Snackbar.make(v,"Enter all the fields with asterisk", Snackbar.LENGTH_LONG).show();
         }
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        switch(item.getItemId())
+        {
+
+            case android.R.id.home:
+                AddBookActivity.this.onBackPressed();
+                break;
+
+        }
+        return true;
     }
 }

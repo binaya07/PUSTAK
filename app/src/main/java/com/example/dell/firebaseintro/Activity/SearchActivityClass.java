@@ -7,12 +7,15 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -52,6 +55,7 @@ public class SearchActivityClass extends AppCompatActivity implements Navigation
     private SellerRecyclerAdapter recyclerViewAdapter;
     private LinearLayoutManager mManager;
     private List<Book> resultBookList;
+    private int hasBookstore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +97,10 @@ public class SearchActivityClass extends AppCompatActivity implements Navigation
                 String lname = dataSnapshot.child("lastName").getValue(String.class);
                 String phone = dataSnapshot.child("phoneNumber").getValue(String.class);
 
+                String hasStore = dataSnapshot.child("hasBookstore").getValue(String.class);
+
+                hasBookstore = Integer.parseInt(hasStore);
+
                 userName.setText(fname + " " + lname);
                 userPhone.setText(phone);
 
@@ -110,8 +118,9 @@ public class SearchActivityClass extends AppCompatActivity implements Navigation
         navigationView.setNavigationItemSelectedListener(this);
         drawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
+        getSupportActionBar().setTitle("Search");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerSearchResult);
@@ -272,16 +281,82 @@ public class SearchActivityClass extends AppCompatActivity implements Navigation
 
             case R.id.register_bookstore:
 
-                //Check if the user has already registered bookstore then if not start new activity
 
-                Toast.makeText(getApplicationContext(),"REGISTER BOOKSTORE",Toast.LENGTH_SHORT).show();
+                if(hasBookstore == 0) {
+                    item.setChecked(true);
+                    startActivity(new Intent(SearchActivityClass.this, RegisterBookstore.class));
+                }
+                else
+                {
+
+                    AlertDialog.Builder alertDialogBuilder;
+                    final AlertDialog dialog;
+                    LayoutInflater inflater;
+
+                    alertDialogBuilder = new AlertDialog.Builder(SearchActivityClass.this);
+
+                    inflater = LayoutInflater.from(SearchActivityClass.this);
+                    View view = inflater.inflate(R.layout.ok_dialog, null);
+
+                    TextView okText = (TextView) view.findViewById(R.id.okText);
+                    Button okButton = (Button) view.findViewById(R.id.okButton);
+
+                    okText.setText("You already have a Bookstore!!");
+
+                    alertDialogBuilder.setView(view);
+                    dialog = alertDialogBuilder.create();
+                    dialog.show();
+
+
+                    okButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            navigationView.setCheckedItem(R.id.search);
+                        }
+                    });
+
+
+
+                }
                 break;
 
             case R.id.my_bookstore:
 
-                //Check if the user has bookstore
 
-                Toast.makeText(getApplicationContext(),"MY BOOKSTORE",Toast.LENGTH_SHORT).show();
+                if(hasBookstore == 1){
+                    startActivity(new Intent(SearchActivityClass.this,MyBookStoreActivity.class));
+
+                }
+                else
+                {
+
+                    AlertDialog.Builder alertDialogBuilder;
+                    final AlertDialog dialog;
+                    LayoutInflater inflater;
+
+                    alertDialogBuilder = new AlertDialog.Builder(SearchActivityClass.this);
+
+                    inflater = LayoutInflater.from(SearchActivityClass.this);
+                    View view = inflater.inflate(R.layout.ok_dialog, null);
+
+                    TextView okText = (TextView) view.findViewById(R.id.okText);
+                    Button okButton = (Button) view.findViewById(R.id.okButton);
+
+                    okText.setText("Bookstore not registered!!");
+                    alertDialogBuilder.setView(view);
+                    dialog = alertDialogBuilder.create();
+                    dialog.show();
+
+
+                    okButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            navigationView.setCheckedItem(R.id.search);
+                        }
+                    });
+                }
                 break;
         }
 

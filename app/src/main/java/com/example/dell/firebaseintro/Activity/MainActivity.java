@@ -91,7 +91,9 @@ public class MainActivity extends AppCompatActivity {
                            Snackbar.make(view,"Authentication failed !", Snackbar.LENGTH_SHORT).show();
                         }
                     }
+
                 });
+
     }
 
     @Override
