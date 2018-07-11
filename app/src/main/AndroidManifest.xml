@@ -56,7 +56,7 @@
             android:label="@string/title_activity_register_store_map" />
         <activity android:name=".Activity.MyBookStoreActivity" />
         <activity android:name=".Activity.BookStoreDetail" />
-        <activity android:name=".Activity.AddBookFromStore"></activity>
+        <activity android:name=".Activity.AddBookFromStore" />
     </application>
 
 </manifest>

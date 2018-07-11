@@ -6,20 +6,15 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
-import com.example.dell.firebaseintro.Adapter.RecyclerViewAdapter;
 import com.example.dell.firebaseintro.Adapter.StoreRecyclerAdapter;
-import com.example.dell.firebaseintro.Model.Book;
-import com.example.dell.firebaseintro.Model.BookStore;
 import com.example.dell.firebaseintro.Model.StoreBook;
 import com.example.dell.firebaseintro.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class BookStoreDetail extends AppCompatActivity {
@@ -39,9 +35,11 @@ public class BookStoreDetail extends AppCompatActivity {
     private LinearLayoutManager mManager;
     private DatabaseReference mDatabaseReference;
     private StoreRecyclerAdapter recyclerViewAdapter;
+    private StoreRecyclerAdapter searchRecyclerAdapter;
     private List<StoreBook> bookList;
+    private List<StoreBook> searchList;
     private ValueEventListener mvalueEventListener;
-
+    private SearchView searchView;
     private String storeName;
     private String storeID;
     private String latitude;
@@ -72,6 +70,8 @@ public class BookStoreDetail extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         bookList = new ArrayList<>();
+        searchList = new ArrayList<>();
+
 
         recyclerView = (RecyclerView)findViewById(R.id.bookstore_detail_recycler);
         bookCount = (TextView) findViewById(R.id.book_count);
@@ -153,6 +153,60 @@ public class BookStoreDetail extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.search_menu, menu);
+
+        searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                if(!searchList.isEmpty())
+                {
+                    searchList.clear();
+                    searchRecyclerAdapter.clearData();
+                }
+
+                if(newText!=null && !TextUtils.isEmpty(newText)) {
+                    newText = newText.toLowerCase(Locale.getDefault());
+
+                    for (StoreBook book : bookList)
+                    {
+                        if(book.getName().toLowerCase(Locale.getDefault()).contains(newText))
+                        {
+                            searchList.add(book);
+                        }
+                    }
+
+                }
+                else
+                {
+                    searchList.clear();
+                }
+
+                searchRecyclerAdapter = new StoreRecyclerAdapter(BookStoreDetail.this, searchList);
+                recyclerView.setAdapter(searchRecyclerAdapter);
+                // searchRecyclerAdapter.notifyDataSetChanged();
+
+                return true;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+
+                searchView.onActionViewCollapsed();
+                recyclerView.setAdapter(recyclerViewAdapter);
+                //recyclerViewAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -161,11 +215,11 @@ public class BookStoreDetail extends AppCompatActivity {
 
         switch (item.getItemId())
         {
-            case R.id.app_bar_search:
+            //case R.id.app_bar_search:
 
                 //Search
 
-                break;
+              //  break;
 
 
             case android.R.id.home:
@@ -196,6 +250,7 @@ public class BookStoreDetail extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
+        searchView.onActionViewCollapsed();
 
         if(mvalueEventListener!=null)
             mDatabaseReference.removeEventListener(mvalueEventListener);

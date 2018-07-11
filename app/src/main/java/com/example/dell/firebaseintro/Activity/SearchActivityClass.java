@@ -12,17 +12,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioGroup;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dell.firebaseintro.Adapter.SellerRecyclerAdapter;
+import com.example.dell.firebaseintro.Adapter.StoreRecyclerAdapter;
 import com.example.dell.firebaseintro.Model.Book;
+import com.example.dell.firebaseintro.Model.StoreBook;
 import com.example.dell.firebaseintro.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,6 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class SearchActivityClass extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -49,13 +57,16 @@ public class SearchActivityClass extends AppCompatActivity implements Navigation
     private TextView userEmail;
     private TextView userName;
     private TextView userPhone;
-    private EditText searchField;
-    private ImageButton searchButton;
     private RecyclerView recyclerView;
     private SellerRecyclerAdapter recyclerViewAdapter;
     private LinearLayoutManager mManager;
     private List<Book> resultBookList;
     private int hasBookstore;
+    private SearchView searchView;
+    private RadioGroup radioGroup;
+    private int searchFlag =1;
+    private String name;
+    private String phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +84,6 @@ public class SearchActivityClass extends AppCompatActivity implements Navigation
         userName = (TextView) header.findViewById(R.id.user_full_name);
         userPhone = (TextView) header.findViewById(R.id.phone_number);
 
-        searchButton = (ImageButton) findViewById(R.id.search_button);
-        searchField = (EditText) findViewById(R.id.search_field);
 
         setSupportActionBar(mToolbar);
 
@@ -129,90 +138,206 @@ public class SearchActivityClass extends AppCompatActivity implements Navigation
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(mManager);
 
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Book");
-
         navigationView.setCheckedItem(R.id.search);
+
+        radioGroup = (RadioGroup) findViewById(R.id.radio_group);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                if(checkedId == R.id.radioBookstore) {
+                    searchFlag = 2;
+                }
+
+                else{
+                    searchFlag = 1;
+                }
+            }
+        });
+
 
     }
 
-
-            private void searchFirebase(String searchedText) {
-
-        //TODO:MAKE SEARCH FLEXIBLE AND capital, small both searching
-
-                mDatabaseReference.orderByChild("name").startAt(searchedText)
-                        .endAt(searchedText + "\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            Book book = ds.getValue(Book.class);
-
-                            if(!book.getId().equals(mUser.getUid()))
-                            {
-                                resultBookList.add(book);
-
-
-                            }
-
-
-
-                        }
-
-                         if (!resultBookList.isEmpty()) {
-                            recyclerViewAdapter = new SellerRecyclerAdapter(SearchActivityClass.this, resultBookList);
-                            recyclerView.setAdapter(recyclerViewAdapter);
-                            recyclerViewAdapter.notifyDataSetChanged();
-
-                        } else {
-                            Toast.makeText(SearchActivityClass.this, "No items!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                        Toast.makeText(SearchActivityClass.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-
-            }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        navigationView.setCheckedItem(R.id.search);
 
 
-                if(!resultBookList.isEmpty())
-                recyclerViewAdapter.clearData();
-
-
-                resultBookList.clear();
-
-                String searchedText = searchField.getText().toString().trim();
-
-                if (!searchedText.isEmpty())
-                    searchFirebase(searchedText);
-
-                else
-
-                    Snackbar.make(v,"Search text required !",Snackbar.LENGTH_SHORT).show();
-            }
-
-        });
     }
+
 
     @Override
     protected void onStop() {
         super.onStop();
 
-       // resultBookList.clear();
+
+        searchView.onActionViewCollapsed();
+//
+//        if(mvalueEventListener!=null)
+//            mDatabaseReference.removeEventListener(mvalueEventListener);
+//
+//        if(!bookList.isEmpty())
+//            recyclerViewAdapter.clearData();
+//
+//        bookList.clear();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+
+        getMenuInflater().inflate(R.menu.search_all, menu);
+        searchView = (SearchView) menu.findItem(R.id.app_search).getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+
+                if(!resultBookList.isEmpty())
+                {
+                    resultBookList.clear();
+                    recyclerViewAdapter.clearData();
+                }
+
+                if(newText!=null && !TextUtils.isEmpty(newText)) {
+
+                    newText = newText.toLowerCase(Locale.getDefault());
+
+                    if(searchFlag ==1) {
+                     searchName(newText);
+                    }
+
+                    if(searchFlag == 2)
+                    {
+                        searchBookstore(newText);
+
+                    }
+
+                    recyclerViewAdapter = new SellerRecyclerAdapter(SearchActivityClass.this, resultBookList);
+                    recyclerView.setAdapter(recyclerViewAdapter);
+
+             }
+
+                else
+                {
+
+                    resultBookList.clear();
+                }
+
+                return true;
+            }
+
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+
+                searchView.onActionViewCollapsed();
+                return true;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void searchBookstore(final String newText)
+    {
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("StoreBook");
+
+        //Maybe not single value event
+
+        mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    StoreBook storeBook = ds.getValue(StoreBook.class);
+
+                    if(storeBook.getName().toLowerCase(Locale.getDefault()).contains(newText))
+                    {
+                        Book book = new Book();
+                        book.setName(storeBook.getName());
+                        book.setPrice(storeBook.getCost());
+                        book.setGenre(storeBook.getGenre());
+                        book.setCondition("Brand New");
+                        book.setBookid(storeBook.getId());
+                        book.setAuthor(storeBook.getAuthor());
+
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                                .child("BookStore").child(storeBook.getStoreID());
+
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                //TODO : CHECK HERE
+
+                                name = (dataSnapshot.child("bookStoreName").getValue(String.class));
+
+                                phone = (dataSnapshot.child("bookStorePhone").getValue(String.class));
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        book.setFname(name);
+                        book.setPhone(phone);
+                        resultBookList.add(book);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void searchName(final String newText){
+
+
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Book");
+
+            mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+
+                        Book book = ds.getValue(Book.class);
+
+                        if(book.getName().toLowerCase(Locale.getDefault()).contains(newText))
+                        {
+                            resultBookList.add(book);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
     }
 
@@ -365,4 +490,6 @@ public class SearchActivityClass extends AppCompatActivity implements Navigation
         return true;
 
     }
+
+
 }

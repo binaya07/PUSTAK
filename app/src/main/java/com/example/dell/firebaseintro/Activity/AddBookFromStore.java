@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +29,7 @@ import java.util.Map;
 public class AddBookFromStore extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private String TITLE = "ADD BOOK ITEM";
+    private String TITLE = "ADD BOOK ";
 
     private ArrayAdapter<String> adapterGenre;
     private Spinner spinnerGenre;

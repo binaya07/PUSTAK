@@ -21,53 +21,47 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-
             <include
                 layout="@layout/navigation_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <RelativeLayout
+
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:checkedButton="@id/radioUser">
 
+                <RadioButton
+                    android:id="@+id/radioUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Search from users" />
 
-                <android.support.v7.widget.RecyclerView
+                <RadioButton
+                    android:id="@+id/radioBookstore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Search from bookstores" />
+            </RadioGroup>
+
+            <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerSearchResult"
-                    android:layout_below="@id/search_field"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="30dp"
+                    android:layout_margin="8dp"
                     android:layout_height="match_parent"
                     android:padding="8dp"
-                    android:scrollbars="vertical"/>
+                    android:scrollbars="vertical">
 
-                <ImageButton
-                    android:id="@+id/search_button"
-                    android:layout_width="30dp"
-                    android:layout_height="56dp"
-                    android:layout_alignBottom="@+id/search_field"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_toRightOf="@id/search_field"
-                    android:background="@drawable/input_outline"
-                    app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+            </android.support.v7.widget.RecyclerView>
 
-                <EditText
-                    android:padding="10dp"
-                    android:background="@drawable/input_outline"
-                    android:id="@+id/search_field"
-                    android:layout_width="290dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:fontFamily="@font/nunito_semibold"
-                    android:hint="Search here..."
-                    android:inputType="text"
-                    android:textSize="20sp" />
-            </RelativeLayout>
 
         </LinearLayout>
     </android.support.v7.widget.FitWindowsFrameLayout>

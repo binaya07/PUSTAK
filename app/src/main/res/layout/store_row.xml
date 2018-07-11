@@ -6,12 +6,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
 xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_margin="5dp"
+android:layout_marginBottom="8dp"
 android:background="@android:color/darker_gray"
 app:cardCornerRadius="4dp"
-app:cardElevation="4dp"
-app:cardUseCompatPadding="true"
-app:cardPreventCornerOverlap="true">
+app:cardElevation="4dp">
 
 <RelativeLayout
     android:layout_height="wrap_content"
@@ -19,10 +17,10 @@ app:cardPreventCornerOverlap="true">
 
     <LinearLayout
         android:id="@+id/store_linear_layout"
-        android:paddingEnd="5dp"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingEnd="5dp">
 
         <TextView
             android:id="@+id/bookTitleList3"
@@ -70,6 +68,33 @@ app:cardPreventCornerOverlap="true">
             android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>
+
+    <TableRow
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignBottom="@id/store_linear_layout"
+        android:layout_alignParentEnd="true"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/editStoreBook"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="5dp"
+            android:background="#ffffff"
+            android:src="@android:drawable/ic_menu_edit" />
+
+        <ImageButton
+            android:id="@+id/deleteStoreBook"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@android:drawable/ic_delete"
+            android:background="#ffffff"
+            android:padding="5dp"
+            />
+
+
+    </TableRow>
 
 </RelativeLayout>
 

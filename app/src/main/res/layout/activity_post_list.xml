@@ -25,7 +25,7 @@ android:fitsSystemWindows="true">
         <include layout="@layout/navigation_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+            style="@style/Theme.AppCompat.Light.DarkActionBar"/>
 
 
         <android.support.v7.widget.RecyclerView
