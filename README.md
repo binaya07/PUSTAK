@@ -18,7 +18,6 @@ the book. Also, all the data is stored in cloud so the users can manage their ac
 from anywhere. This application would save the user’s time from visiting different
 bookstores and allows user to buy the used books at cheaper price.
 
-![33597106_1804489476278987_8849656946630852608_n](https://user-images.githubusercontent.com/19249901/131961733-ea1e513a-81d3-4644-8b7e-c52d3da0d8c8.jpg)
-![33689290_1804489432945658_7525325371709849600_n](https://user-images.githubusercontent.com/19249901/131961737-3c94a9f9-ea86-498a-92b5-523f72c39267.jpg)
-![33825678_1804489422945659_2109156291858399232_n](https://user-images.githubusercontent.com/19249901/131961743-8989a294-fe61-4873-88ec-de4076bde886.jpg)
-
+<img src="https://user-images.githubusercontent.com/19249901/131961733-ea1e513a-81d3-4644-8b7e-c52d3da0d8c8.jpg" align ="left" alt="Login Screen" width="250" height="450"/>
+<img src="https://user-images.githubusercontent.com/19249901/131961737-3c94a9f9-ea86-498a-92b5-523f72c39267.jpg"  align ="left" alt="Home Screen" width="250" height="450"/>
+<img src="https://user-images.githubusercontent.com/19249901/131962349-20dd6988-e0ba-42f8-81e6-f1a18bf98806.jpg" alt="Home Screen" width="250" height="450"/>
